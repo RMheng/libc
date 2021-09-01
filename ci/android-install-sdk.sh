@@ -1,13 +1,4 @@
 #!/usr/bin/env sh
-# Copyright 2016 The Rust Project Developers. See the COPYRIGHT
-# file at the top-level directory of this distribution and at
-# http://rust-lang.org/COPYRIGHT.
-#
-# Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
-# http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
-# <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
-# option. This file may not be copied, modified, or distributed
-# except according to those terms.
 
 set -ex
 
@@ -18,15 +9,15 @@ set -ex
 # located in https://github.com/appunite/docker by just wrapping it in a script
 # which apparently magically accepts the licenses.
 
-SDK=4333796
-mkdir sdk
-curl --retry 20 https://dl.google.com/android/repository/sdk-tools-linux-${SDK}.zip -O
-unzip -q -d sdk sdk-tools-linux-${SDK}.zip
+SDK=6609375
+mkdir -p sdk/cmdline-tools
+wget -q --tries=20 https://dl.google.com/android/repository/commandlinetools-linux-${SDK}_latest.zip
+unzip -q -d sdk/cmdline-tools commandlinetools-linux-${SDK}_latest.zip
 
 case "$1" in
   arm | armv7)
     api=24
-    image="system-images;android-${api};google_apis;armeabi-v7a"
+    image="system-images;android-${api};default;armeabi-v7a"
     ;;
   aarch64)
     api=24
@@ -60,14 +51,14 @@ echo '#Fri Nov 03 10:11:27 CET 2017 count=0' >> /root/.android/repositories.cfg
 #
 # | grep -v = || true    removes the progress bar output from the sdkmanager
 # which produces an insane amount of output.
-yes | ./sdk/tools/bin/sdkmanager --licenses --no_https | grep -v = || true
-yes | ./sdk/tools/bin/sdkmanager --no_https \
+yes | ./sdk/cmdline-tools/tools/bin/sdkmanager --licenses --no_https | grep -v = || true
+yes | ./sdk/cmdline-tools/tools/bin/sdkmanager --no_https \
         "emulator" \
         "platform-tools" \
         "platforms;android-${api}" \
         "${image}" | grep -v = || true
 
 echo "no" |
-    ./sdk/tools/bin/avdmanager create avd \
+    ./sdk/cmdline-tools/tools/bin/avdmanager create avd \
         --name "${1}" \
         --package "${image}" | grep -v = || true

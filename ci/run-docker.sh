@@ -5,6 +5,22 @@
 
 set -ex
 
+# Default to assuming the CARGO_HOME is one directory up (to account for a `bin`
+# subdir) from where the `cargo` binary in `$PATH` lives.
+DEFAULT_CARGO_HOME="$(dirname "$(dirname "$(command -v cargo)")")"
+# If the CARGO_HOME env var is already set, use that. If it isn't set use the
+# default.
+CARGO_HOME="${CARGO_HOME:-$DEFAULT_CARGO_HOME}"
+
+echo "${HOME}"
+pwd
+
+# Avoid "no space left on device" failure.
+if [ "${1}" = "aarch64-linux-android" ] ; then
+  docker system prune -af
+  docker system df
+fi
+
 run() {
     echo "Building docker container for target ${1}"
 
@@ -18,19 +34,54 @@ run() {
     fi
 
     docker run \
-      --user "$(id -u)":"$(id -g)" \
       --rm \
-      --init \
-      --volume "${HOME}/.cargo":/cargo \
-      $kvm \
+      --user "$(id -u)":"$(id -g)" \
+      --env LIBC_CI \
       --env CARGO_HOME=/cargo \
+      --env CARGO_TARGET_DIR=/checkout/target \
+      --volume "$CARGO_HOME":/cargo \
       --volume "$(rustc --print sysroot)":/rust:ro \
       --volume "$(pwd)":/checkout:ro \
       --volume "$(pwd)"/target:/checkout/target \
-      --env CARGO_TARGET_DIR=/checkout/target \
+      $kvm \
+      --init \
       --workdir /checkout \
       libc \
-      ci/run.sh "${1}"
+      sh -c "HOME=/tmp PATH=\$PATH:/rust/bin exec ci/run.sh ${1}"
+}
+
+build_switch() {
+    echo "Building docker container for target switch"
+
+    # use -f so we can use ci/ as build context
+    docker build -t libc -f "ci/docker/switch/Dockerfile" ci/
+    mkdir -p target
+    if [ -w /dev/kvm ]; then
+        kvm="--volume /dev/kvm:/dev/kvm"
+    else
+        kvm=""
+    fi
+
+    cp "$(command -v rustup)" "$(rustc --print sysroot)/bin"
+
+    docker run \
+      --rm \
+      --user "$(id -u)":"$(id -g)" \
+      --env LIBC_CI \
+      --env CARGO_HOME=/cargo \
+      --env CARGO_TARGET_DIR=/checkout/target \
+      --volume "$CARGO_HOME":/cargo \
+      --volume "$(rustc --print sysroot)":/rust:ro \
+      --volume "$(pwd)":/checkout:ro \
+      --volume "$(pwd)"/target:/checkout/target \
+      --volume ~/.rustup:/.rustup:Z \
+      $kvm \
+      --init \
+      --workdir /checkout \
+      libc \
+      sh -c "HOME=/tmp RUSTUP_HOME=/tmp PATH=\$PATH:/rust/bin rustup default nightly \
+        && rustup component add rust-src --target ci/switch.json \
+        && cargo build -Z build-std=core,alloc --target ci/switch.json"
 }
 
 if [ -z "${1}" ]; then
@@ -38,5 +89,9 @@ if [ -z "${1}" ]; then
     run "${d}"
   done
 else
-  run "${1}"
+  if [ "${1}" != "switch" ]; then
+    run "${1}"
+  else
+    build_switch
+  fi
 fi

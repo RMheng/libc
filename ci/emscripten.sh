@@ -1,15 +1,8 @@
 #!/usr/bin/env bash
-# Copyright 2017 The Rust Project Developers. See the COPYRIGHT
-# file at the top-level directory of this distribution and at
-# http://rust-lang.org/COPYRIGHT.
-#
-# Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
-# http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
-# <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
-# option. This file may not be copied, modified, or distributed
-# except according to those terms.
 
 set -ex
+
+EMSDK_VERSION=1.39.20
 
 hide_output() {
   set +x
@@ -28,29 +21,23 @@ exit 1
   set -x
 }
 
-cd /
-curl --retry 5 -L https://s3.amazonaws.com/mozilla-games/emscripten/releases/emsdk-portable.tar.gz | \
-    tar -xz
-
+git clone https://github.com/emscripten-core/emsdk.git /emsdk-portable
 cd /emsdk-portable
-./emsdk update
-hide_output ./emsdk install sdk-1.38.15-64bit
-./emsdk activate sdk-1.38.15-64bit
+hide_output ./emsdk install "${EMSDK_VERSION}"
+./emsdk activate "${EMSDK_VERSION}"
 
 # Compile and cache libc
 # shellcheck disable=SC1091
 source ./emsdk_env.sh
 echo "main(){}" > a.c
 HOME=/emsdk-portable/ emcc a.c
-HOME=/emsdk-portable/ emcc -s BINARYEN=1 a.c
 rm -f a.*
 
 # Make emsdk usable by any user
-cp /root/.emscripten /emsdk-portable
 chmod a+rxw -R /emsdk-portable
 
 # node 8 is required to run wasm
+# NOTE: Do not forget to sync Node.js version with `emscripten-entry.sh`!
 cd /
-curl --retry 5 -L https://nodejs.org/dist/v12.3.1/node-v12.3.1-linux-x64.tar.xz | \
+curl --retry 5 -L https://nodejs.org/dist/v14.17.0/node-v14.17.0-linux-x64.tar.xz | \
     tar -xJ
-

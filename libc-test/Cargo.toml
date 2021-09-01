@@ -1,16 +1,24 @@
 [package]
 name = "libc-test"
-version = "0.1.0"
-authors = ["Alex Crichton <alex@alexcrichton.com>"]
+version = "0.2.101"
+authors = ["The Rust Project Developers"]
+license = "MIT OR Apache-2.0"
 build = "build.rs"
+repository = "https://github.com/rust-lang/libc"
+homepage = "https://github.com/rust-lang/libc"
+description = """
+A test crate for the libc crate.
+"""
 
 [dependencies.libc]
 path = ".."
+version = "0.2.101"
 default-features = false
 
 [build-dependencies]
-cc = "1.0"
-ctest = "0.2"
+cc = "1.0.61"
+# FIXME: Use fork ctest until the maintainer gets back.
+ctest2 = "0.4"
 
 [features]
 default = [ "std" ]
@@ -26,6 +34,11 @@ harness = false
 [[test]]
 name = "linux-fcntl"
 path = "test/linux_fcntl.rs"
+harness = false
+
+[[test]]
+name = "linux-if-arp"
+path = "test/linux_if_arp.rs"
 harness = false
 
 [[test]]
@@ -52,3 +65,18 @@ harness = false
 name = "cmsg"
 path = "test/cmsg.rs"
 harness = true
+
+[[test]]
+name = "errqueue"
+path = "test/errqueue.rs"
+harness = true
+
+[[test]]
+name = "sigrt"
+path = "test/sigrt.rs"
+harness = true
+
+[[test]]
+name = "semver"
+path = "test/semver.rs"
+harness = false

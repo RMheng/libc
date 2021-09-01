@@ -1,7 +1,12 @@
-FROM ubuntu:19.04
+FROM ubuntu:20.04
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+# This is a workaround to avoid the interaction with tzdata.
+ENV DEBIAN_FRONTEND=noninteractive
+ENV TZ=America/New_York
+
+RUN apt-get update
+RUN apt-get install -y --no-install-recommends tzdata
+RUN apt-get install -y --no-install-recommends \
     ca-certificates \
     g++ \
     make \
@@ -10,12 +15,16 @@ RUN apt-get update && \
     gcc \
     git \
     libc6-dev \
-    python \
+    libxml2 \
+    python3 \
+    python3-distutils \
     cmake \
     sudo \
     gdb \
     xz-utils
 
+RUN ln -s /usr/bin/python3 /usr/bin/python & \
+    ln -s /usr/bin/pip3 /usr/bin/pip
 COPY emscripten.sh /
 RUN bash /emscripten.sh
 

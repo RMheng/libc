@@ -16,8 +16,7 @@
 //!
 //! * No trailing whitespace
 //! * No tabs
-//! * 80-character lines
-//! * `extern` instead of `extern "C"`
+//! * 100-character lines
 //! * Specific module layout:
 //!     1. use directives
 //!     2. typedefs
@@ -123,13 +122,10 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
         if line.contains("\t") {
             err.error(path, i, "tab character");
         }
-        if line.len() > 80 {
-            err.error(path, i, "line longer than 80 chars");
+        if line.len() > 100 && !(line.contains("https://") || line.contains("http://")) {
+            err.error(path, i, "line longer than 100 chars");
         }
-        if line.contains("extern \"C\"") {
-            err.error(path, i, "use `extern` instead of `extern \"C\"");
-        }
-        if line.contains("#[cfg(") && !line.contains(" if ")
+        if line.contains("#[cfg(") && line.contains(']') && !line.contains(" if ")
             && !(line.contains("target_endian") ||
                  line.contains("target_arch"))
         {
@@ -138,7 +134,11 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
                                     instead of #[cfg]");
             }
         }
+        if line.contains("#[derive(") && (line.contains("Copy") || line.contains("Clone")) {
+            err.error(path, i, "impl ::Copy and ::Clone manually");
+        }
 
+        let orig_line = line;
         let line = line.trim_start();
         let is_pub = line.starts_with("pub ");
         let line = if is_pub {&line[4..]} else {line};
@@ -162,7 +162,7 @@ fn check_style(file: &str, path: &Path, err: &mut Errors) {
         } else if line.starts_with("f! {") {
             f_macros += 1;
             State::FunctionDefinitions
-        } else if line.starts_with("extern ") {
+        } else if line.starts_with("extern ") && !orig_line.starts_with(" ") {
             State::Functions
         } else if line.starts_with("mod ") {
             State::Modules
