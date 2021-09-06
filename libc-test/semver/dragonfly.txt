@@ -219,7 +219,6 @@ ENEEDAUTH
 ENOATTR
 ENOLINK
 ENOMEDIUM
-ENOTBLK
 ENOTSUP
 EOF
 EPROCLIM
@@ -230,11 +229,7 @@ ERA
 ERA_D_FMT
 ERA_D_T_FMT
 ERA_T_FMT
-EREMOTE
 ERPCMISMATCH
-ESOCKTNOSUPPORT
-ETOOMANYREFS
-EUSERS
 EVFILT_AIO
 EVFILT_EXCEPT
 EVFILT_FS
@@ -344,7 +339,6 @@ IFF_SIMPLEX
 IFF_SMART
 IFF_STATICARP
 IFF_UP
-IMAXBEL
 INIT_PROCESS
 IOV_MAX
 IPC_CREAT
@@ -675,7 +669,6 @@ NTP_API
 OLD_TIME
 ONOEOT
 OXTABS
-O_ASYNC
 O_DIRECT
 O_EXLOCK
 O_FSYNC
@@ -732,11 +725,6 @@ POSIX_MADV_RANDOM
 POSIX_MADV_SEQUENTIAL
 POSIX_MADV_WILLNEED
 PPPDISC
-PROC_PDEATHSIG_CTL
-PROC_PDEATHSIG_STATUS
-PROC_REAP_ACQUIRE
-PROC_REAP_RELEASE
-PROC_REAP_STATUS
 PTHREAD_CREATE_DETACHED
 PTHREAD_CREATE_JOINABLE
 PTHREAD_MUTEX_DEFAULT
@@ -859,7 +847,6 @@ SIGEV_NONE
 SIGEV_SIGNAL
 SIGEV_THREAD
 SIGINFO
-SIGIO
 SIGNATURE
 SIGSTKSZ
 SIOCGIFADDR
@@ -1021,13 +1008,9 @@ UTX_DB_LASTLOG
 UTX_DB_UTMPX
 UTX_DB_WTMPX
 VCHECKPT
-VDISCARD
 VDSUSP
 VERASE2
-VLNEXT
-VREPRINT
 VSTATUS
-VWERASE
 WEXITED
 WNOWAIT
 WSTOPPED
@@ -1097,7 +1080,6 @@ _SC_IOV_MAX
 _SC_IPV6
 _SC_JOB_CONTROL
 _SC_LINE_MAX
-_SC_LOGIN_NAME_MAX
 _SC_MAPPED_FILES
 _SC_MEMLOCK
 _SC_MEMLOCK_RANGE
@@ -1113,7 +1095,6 @@ _SC_PRIORITIZED_IO
 _SC_PRIORITY_SCHEDULING
 _SC_RAW_SOCKETS
 _SC_READER_WRITER_LOCKS
-_SC_RE_DUP_MAX
 _SC_REALTIME_SIGNALS
 _SC_REGEXP
 _SC_RTSIG_MAX
@@ -1169,10 +1150,6 @@ _SC_XOPEN_STREAMS
 _SC_XOPEN_UNIX
 _SC_XOPEN_VERSION
 _SC_XOPEN_XCU_VERSION
-_UTX_HOSTSIZE
-_UTX_IDSIZE
-_UTX_LINESIZE
-_UTX_USERSIZE
 __errno_location
 abs
 accept4
@@ -1242,10 +1219,8 @@ getgrgid_r
 getgrnam
 getgrnam_r
 getgrouplist
-gethostid
 getifaddrs
 getitimer
-getlastlogx
 getline
 getloadavg
 getnameinfo
@@ -1260,7 +1235,6 @@ getrusage
 getservbyport
 getservent
 getsid
-getutxuser
 getutxent
 getutxid
 getutxline
@@ -1284,7 +1258,6 @@ kevent
 killpg
 kqueue
 labs
-lastlog
 lchflags
 lio_listio
 lockf
@@ -1333,7 +1306,6 @@ popen
 posix_madvise
 ppoll
 preadv
-procctl
 pseudo_AF_HDRCMPLT
 pseudo_AF_KEY
 pseudo_AF_PIP
@@ -1386,12 +1358,8 @@ regfree
 regmatch_t
 regoff_t
 rtprio
-sched_getparam
 sched_getscheduler
-sched_get_priority_max
-sched_get_priority_min
 sched_param
-sched_setparam
 sched_setscheduler
 seekdir
 sem
@@ -1407,7 +1375,6 @@ sendmsg
 setdomainname
 setgrent
 setgroups
-sethostid
 sethostname
 setitimer
 setpriority
@@ -1422,10 +1389,6 @@ settimeofday
 setutxdb
 setutxent
 sf_hdtr
-shmat
-shmctl
-shmdt
-shmget
 sigaltstack
 sigevent
 siginfo_t
@@ -1452,13 +1415,10 @@ truncate
 ttyname_r
 ucontext_t
 unmount
-updatelastlogx
-updwtmpx
 useconds_t
 uselocale
 utimensat
 utmpx
-utmpxname
 uuid
 uuid_t
 vm_size_t

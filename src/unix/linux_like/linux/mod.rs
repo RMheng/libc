@@ -3837,8 +3837,6 @@ extern "C" {
         new_value: *const ::itimerspec,
         old_value: *mut ::itimerspec,
     ) -> ::c_int;
-
-    pub fn gethostid() -> ::c_long;
 }
 
 cfg_if! {

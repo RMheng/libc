@@ -148,7 +148,6 @@ abs
 accept
 access
 aligned_malloc
-aligned_free
 atexit
 atof
 atoi
@@ -298,7 +297,6 @@ strrchr
 strspn
 strstr
 strtod
-strtof
 strtok
 strtol
 strtoul

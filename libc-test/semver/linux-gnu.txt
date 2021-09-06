@@ -525,7 +525,6 @@ __rlimit_resource_t
 __timeval
 adjtimex
 backtrace
-clock_adjtime
 copy_file_range
 dlinfo
 dlmopen
@@ -570,7 +569,6 @@ qsort_r
 reallocarray
 semid_ds
 seminfo
-sethostid
 setutxent
 setxattr
 sgetspent_r

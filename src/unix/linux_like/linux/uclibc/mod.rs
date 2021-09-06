@@ -287,8 +287,6 @@ extern "C" {
         iovcnt: ::c_int,
         offset: ::off64_t,
     ) -> ::ssize_t;
-
-    pub fn sethostid(hostid: ::c_long) -> ::c_int;
 }
 
 cfg_if! {
