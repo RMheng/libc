@@ -242,14 +242,11 @@ IFF_UP
 IOV_MAX
 IPC_CREAT
 IPC_EXCL
-IPC_M
 IPC_NOWAIT
 IPC_PRIVATE
-IPC_R
 IPC_RMID
 IPC_SET
 IPC_STAT
-IPC_W
 IPPROTO_AH
 IPPROTO_CARP
 IPPROTO_DIVERT
@@ -421,7 +418,6 @@ MADV_NORMAL
 MADV_RANDOM
 MADV_SEQUENTIAL
 MADV_WILLNEED
-MAP_CONCEAL
 MAP_COPY
 MAP_FILE
 MAP_HASSEMAPHORE
@@ -499,11 +495,6 @@ NFSMNT_WANTRCV
 NFSMNT_WANTSND
 NFSMNT_WSIZE
 NFS_ARGSVERSION
-NI_NUMERICHOST
-NI_NUMERICSERV
-NI_NOFQDN
-NI_NAMEREQD
-NI_DGRAM
 NOEXPR
 NOKERNINFO
 NOSTR
@@ -673,8 +664,6 @@ SF_APPEND
 SF_ARCHIVED
 SF_IMMUTABLE
 SF_SETTABLE
-SHM_R
-SHM_W
 SIGEMT
 SIGINFO
 SIGSTKSZ
@@ -887,9 +876,6 @@ __errno
 abs
 accept4
 acct
-arc4random
-arc4random_buf
-arc4random_uniform
 arphdr
 atof
 bsearch
@@ -907,12 +893,10 @@ dirfd
 dl_iterate_phdr
 dl_phdr_info
 dup3
-duplocale
 endgrent
 endpwent
 endservent
 execvpe
-explicit_bzero
 export_args
 faccessat
 fchdir
@@ -922,7 +906,6 @@ fdopendir
 fmemopen
 forkpty
 freeifaddrs
-freelocale
 fsid_t
 fstatfs
 fusefs_args
@@ -967,7 +950,6 @@ iso_args
 kevent
 key_t
 killpg
-kinfo_vmentry
 kqueue
 labs
 lastlog
@@ -987,7 +969,6 @@ mkstemps
 mount_info
 msdosfs_args
 msghdr
-newlocale
 nfs_args
 nice
 nl_item
@@ -1017,12 +998,6 @@ pthread_kill
 pthread_main_np
 pthread_mutex_timedlock
 pthread_set_name_np
-pthread_spin_destroy
-pthread_spin_init
-pthread_spin_lock
-pthread_spin_trylock
-pthread_spin_unlock
-pthread_spinlock_t
 pthread_stackseg_np
 ptrace
 ptrace_io_desc
@@ -1031,7 +1006,6 @@ qsort
 rand
 readdir_r
 readlinkat
-reallocarray
 recvmsg
 regcomp
 regerror
@@ -1056,7 +1030,6 @@ setgroups
 sethostname
 setitimer
 setpriority
-setproctitle
 setprogname
 setpwent
 setresgid
@@ -1093,9 +1066,7 @@ ttyname_r
 udf_args
 ufs_args
 unmount
-unveil
 useconds_t
-uselocale
 utimensat
 utmp
 wait4

@@ -372,8 +372,6 @@ IPPROTO_UDPLITE
 IPV6_ADD_MEMBERSHIP
 IPV6_DROP_MEMBERSHIP
 IP_FREEBIND
-IP_TOS
-IP_RECVTOS
 IP_HDRINCL
 IP_TRANSPARENT
 ITIMER_PROF
@@ -1370,6 +1368,3 @@ utimensat
 vhangup
 vmsplice
 waitid
-zx_cprng_add_entropy
-zx_cprng_draw
-zx_status_t

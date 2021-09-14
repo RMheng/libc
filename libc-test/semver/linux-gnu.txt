@@ -529,7 +529,6 @@ copy_file_range
 dlinfo
 dlmopen
 endutxent
-explicit_bzero
 fgetspent_r
 getgrent_r
 getpt
@@ -546,7 +545,6 @@ glob_t
 globfree
 globfree64
 mallinfo
-mallinfo2
 malloc_usable_size
 mallopt
 nl_mmap_hdr
@@ -566,9 +564,6 @@ pthread_setname_np
 pututxline
 pwritev2
 qsort_r
-reallocarray
-semid_ds
-seminfo
 setutxent
 setxattr
 sgetspent_r

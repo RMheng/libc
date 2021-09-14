@@ -69,7 +69,6 @@ ARPHRD_ASH
 ARPHRD_ATM
 ARPHRD_AX25
 ARPHRD_BIF
-ARPHRD_CAN
 ARPHRD_CHAOS
 ARPHRD_CISCO
 ARPHRD_CSLIP
@@ -1099,7 +1098,6 @@ MS_DIRSYNC
 MS_INVALIDATE
 MS_I_VERSION
 MS_KERNMOUNT
-MS_LAZYTIME
 MS_MANDLOCK
 MS_MGC_MSK
 MS_MGC_VAL
@@ -1777,25 +1775,9 @@ SCM_CREDENTIALS
 SCM_RIGHTS
 SCM_TIMESTAMP
 
-SECCOMP_FILTER_FLAG_LOG
-SECCOMP_FILTER_FLAG_NEW_LISTENER
-SECCOMP_FILTER_FLAG_SPEC_ALLOW
-SECCOMP_FILTER_FLAG_TSYNC
 SECCOMP_MODE_DISABLED
 SECCOMP_MODE_FILTER
 SECCOMP_MODE_STRICT
-SECCOMP_RET_ACTION
-SECCOMP_RET_ACTION_FULL
-SECCOMP_RET_ALLOW
-SECCOMP_RET_DATA
-SECCOMP_RET_ERRNO
-SECCOMP_RET_KILL
-SECCOMP_RET_KILL_PROCESS
-SECCOMP_RET_KILL_THREAD
-SECCOMP_RET_LOG
-SECCOMP_RET_TRACE
-SECCOMP_RET_TRAP
-SECCOMP_RET_USER_NOTIF
 SEEK_CUR
 SEEK_DATA
 SEEK_END
@@ -2572,9 +2554,6 @@ addrinfo
 af_alg_iv
 alarm
 android_set_abort_message
-arc4random
-arc4random_buf
-arc4random_uniform
 arphdr
 arpreq
 arpreq_old
@@ -2854,9 +2833,7 @@ lstat64
 madvise
 major
 makedev
-mallinfo
 malloc
-malloc_usable_size
 mcontext_t
 memalign
 memchr
@@ -2949,15 +2926,6 @@ pthread_attr_init
 pthread_attr_setdetachstate
 pthread_attr_setstacksize
 pthread_attr_t
-pthread_barrierattr_destroy
-pthread_barrierattr_getpshared
-pthread_barrierattr_init
-pthread_barrierattr_setpshared
-pthread_barrierattr_t
-pthread_barrier_destroy
-pthread_barrier_init
-pthread_barrier_wait
-pthread_barrier_t
 pthread_cond_broadcast
 pthread_cond_destroy
 pthread_cond_init
@@ -3013,12 +2981,6 @@ pthread_self
 pthread_setschedparam
 pthread_setspecific
 pthread_sigmask
-pthread_spin_destroy
-pthread_spin_init
-pthread_spin_lock
-pthread_spin_trylock
-pthread_spin_unlock
-pthread_spinlock_t
 pthread_t
 ptrace
 ptrdiff_t
@@ -3044,7 +3006,6 @@ readlink
 readlinkat
 readv
 realloc
-reallocarray
 realpath
 recv
 recvfrom
@@ -3083,7 +3044,6 @@ sched_setaffinity
 sched_setparam
 sched_setscheduler
 sched_yield
-seccomp_data
 seekdir
 select
 sem_close
@@ -3157,8 +3117,6 @@ size_t
 sleep
 snprintf
 sock_extended_err
-sock_filter
-sock_fprog
 sockaddr
 sockaddr_alg
 sockaddr_in

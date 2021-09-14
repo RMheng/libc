@@ -26,13 +26,6 @@ fn do_cc() {
     if target.contains("android") || target.contains("linux") {
         cc::Build::new().file("src/errqueue.c").compile("errqueue");
     }
-    if target.contains("linux")
-        || target.contains("l4re")
-        || target.contains("android")
-        || target.contains("emscripten")
-    {
-        cc::Build::new().file("src/sigrt.c").compile("sigrt");
-    }
 }
 
 fn do_ctest() {
@@ -180,9 +173,6 @@ fn test_apple(target: &str) {
 
     headers! { cfg:
         "aio.h",
-        "CommonCrypto/CommonCrypto.h",
-        "CommonCrypto/CommonRandom.h",
-        "crt_externs.h",
         "ctype.h",
         "dirent.h",
         "dlfcn.h",
@@ -194,16 +184,10 @@ fn test_apple(target: &str) {
         "iconv.h",
         "ifaddrs.h",
         "langinfo.h",
-        "libproc.h",
         "limits.h",
         "locale.h",
         "mach-o/dyld.h",
-        "mach/mach_init.h",
         "mach/mach_time.h",
-        "mach/mach_types.h",
-        "mach/mach_vm.h",
-        "mach/thread_act.h",
-        "mach/thread_policy.h",
         "malloc/malloc.h",
         "net/bpf.h",
         "net/if.h",
@@ -233,8 +217,6 @@ fn test_apple(target: &str) {
         "stdio.h",
         "stdlib.h",
         "string.h",
-        "sys/attr.h",
-        "sys/clonefile.h",
         "sys/event.h",
         "sys/file.h",
         "sys/ioctl.h",
@@ -284,16 +266,14 @@ fn test_apple(target: &str) {
     });
 
     cfg.skip_const(move |name| {
-        // They're declared via `deprecated_mach` and we don't support it anymore.
-        if name.starts_with("VM_FLAGS_") {
-            return true;
-        }
         match name {
             // These OSX constants are removed in Sierra.
             // https://developer.apple.com/library/content/releasenotes/General/APIDiffsMacOS10_12/Swift/Darwin.html
             "KERN_KDENABLE_BG_TRACE" | "KERN_KDDISABLE_BG_TRACE" => true,
             // FIXME: the value has been changed since Catalina (0xffff0000 -> 0x3fff0000).
             "SF_SETTABLE" => true,
+            // FIXME: the value has been changed since Catalina (VM_FLAGS_RESILIENT_MEDIA is also contained now).
+            "VM_FLAGS_USER_REMAP" => true,
             // FIXME: the values have been changed since Big Sur
             "HW_TARGET" | "HW_PRODUCT" | "HW_MAXID" => true,
             _ => false,
@@ -372,8 +352,6 @@ fn test_apple(target: &str) {
     cfg.skip_roundtrip(move |s| match s {
         // FIXME: this type has the wrong ABI
         "max_align_t" if i686 => true,
-        // Can't return an array from a C function.
-        "uuid_t" => true,
         _ => false,
     });
     cfg.generate("../src/lib.rs", "main.rs");
@@ -422,7 +400,6 @@ fn test_openbsd(target: &str) {
         "sys/ioctl.h",
         "sys/mman.h",
         "sys/resource.h",
-        "sys/shm.h",
         "sys/socket.h",
         "sys/time.h",
         "sys/un.h",
@@ -599,11 +576,7 @@ fn test_windows(target: &str) {
         match name {
             // FIXME: API error:
             // SIG_ERR type is "void (*)(int)", not "int"
-            "SIG_ERR" |
-            // Similar for SIG_DFL/IGN/GET/SGE/ACK
-            "SIG_DFL" | "SIG_IGN" | "SIG_GET" | "SIG_SGE" | "SIG_ACK" => true,
-            // FIXME: newer windows-gnu environment on CI?
-            "_O_OBTAIN_DIR" if gnu => true,
+            "SIG_ERR" => true,
             _ => false,
         }
     });
@@ -742,7 +715,6 @@ fn test_solarish(target: &str) {
         "sys/loadavg.h",
         "sys/mman.h",
         "sys/mount.h",
-        "sys/pset.h",
         "sys/resource.h",
         "sys/socket.h",
         "sys/stat.h",
@@ -933,7 +905,6 @@ fn test_netbsd(target: &str) {
         "grp.h",
         "ifaddrs.h",
         "langinfo.h",
-        "net/bpf.h",
         "net/if.h",
         "net/if_arp.h",
         "net/if_dl.h",
@@ -952,7 +923,6 @@ fn test_netbsd(target: &str) {
         "semaphore.h",
         "signal.h",
         "string.h",
-        "sys/endian.h",
         "sys/extattr.h",
         "sys/file.h",
         "sys/ioctl.h",
@@ -961,14 +931,12 @@ fn test_netbsd(target: &str) {
         "sys/mount.h",
         "sys/ptrace.h",
         "sys/resource.h",
-        "sys/shm.h",
         "sys/socket.h",
         "sys/statvfs.h",
         "sys/sysctl.h",
         "sys/time.h",
         "sys/times.h",
         "sys/timex.h",
-        "sys/ucontext.h",
         "sys/uio.h",
         "sys/un.h",
         "sys/utsname.h",
@@ -1113,8 +1081,6 @@ fn test_netbsd(target: &str) {
             // conflicting with `p_type` macro from <resolve.h>.
             ("Elf32_Phdr", "p_type") => true,
             ("Elf64_Phdr", "p_type") => true,
-            // pthread_spin_t is a volatile uchar
-            ("pthread_spinlock_t", "pts_spin") => true,
             _ => false,
         }
     });
@@ -1169,14 +1135,11 @@ fn test_dragonflybsd(target: &str) {
         "sys/event.h",
         "sys/file.h",
         "sys/ioctl.h",
-        "sys/ipc.h",
         "sys/mman.h",
         "sys/mount.h",
         "sys/ptrace.h",
         "sys/resource.h",
         "sys/rtprio.h",
-        "sys/sched.h",
-        "sys/shm.h",
         "sys/socket.h",
         "sys/stat.h",
         "sys/statvfs.h",
@@ -1191,7 +1154,6 @@ fn test_dragonflybsd(target: &str) {
         "syslog.h",
         "termios.h",
         "time.h",
-        "ucontext.h",
         "ufs/ufs/quota.h",
         "unistd.h",
         "util.h",
@@ -1422,13 +1384,11 @@ fn test_android(target: &str) {
                "ctype.h",
                "dirent.h",
                "dlfcn.h",
-               "elf.h",
                "errno.h",
                "fcntl.h",
                "grp.h",
                "ifaddrs.h",
                "limits.h",
-               "link.h",
                "locale.h",
                "malloc.h",
                "net/ethernet.h",
@@ -1478,7 +1438,6 @@ fn test_android(target: &str) {
                "sys/swap.h",
                "sys/syscall.h",
                "sys/sysinfo.h",
-               "sys/system_properties.h",
                "sys/time.h",
                "sys/timerfd.h",
                "sys/times.h",
@@ -1509,7 +1468,6 @@ fn test_android(target: &str) {
                 "asm/mman.h",
                 "linux/auxvec.h",
                 "linux/dccp.h",
-                "linux/elf.h",
                 "linux/errqueue.h",
                 "linux/falloc.h",
                 "linux/futex.h",
@@ -1548,7 +1506,7 @@ fn test_android(target: &str) {
     cfg.type_name(move |ty, is_struct, is_union| {
         match ty {
             // Just pass all these through, no need for a "struct" prefix
-            "FILE" | "fd_set" | "Dl_info" | "Elf32_Phdr" | "Elf64_Phdr" => ty.to_string(),
+            "FILE" | "fd_set" | "Dl_info" => ty.to_string(),
 
             t if is_union => format!("union {}", t),
 
@@ -1642,7 +1600,6 @@ fn test_android(target: &str) {
             // We skip the test here since here _GNU_SOURCE is defined, and
             // test the XSI version below.
             "strerror_r" => true,
-            "reallocarray" => true,
 
             _ => false,
         }
@@ -1652,12 +1609,7 @@ fn test_android(target: &str) {
         // This is a weird union, don't check the type.
         (struct_ == "ifaddrs" && field == "ifa_ifu") ||
         // sigval is actually a union, but we pretend it's a struct
-        (struct_ == "sigevent" && field == "sigev_value") ||
-        // FIXME: `sa_sigaction` has type `sighandler_t` but that type is
-        // incorrect, see: https://github.com/rust-lang/libc/issues/1359
-        (struct_ == "sigaction" && field == "sa_sigaction") ||
-        // signalfd had SIGSYS fields added in Android 4.19, but CI does not have that version yet.
-        (struct_ == "signalfd_siginfo" && field == "ssi_call_addr")
+        (struct_ == "sigevent" && field == "sigev_value")
     });
 
     cfg.skip_field(move |struct_, field| {
@@ -1673,20 +1625,6 @@ fn test_android(target: &str) {
         (struct_ == "signalfd_siginfo" && (field == "ssi_syscall" ||
                                            field == "ssi_call_addr" ||
                                            field == "ssi_arch"))
-    });
-
-    cfg.skip_field(|struct_, field| {
-        match (struct_, field) {
-            // conflicting with `p_type` macro from <resolve.h>.
-            ("Elf32_Phdr", "p_type") => true,
-            ("Elf64_Phdr", "p_type") => true,
-
-            // this is actually a union on linux, so we can't represent it well and
-            // just insert some padding.
-            ("siginfo_t", "_pad") => true,
-
-            _ => false,
-        }
     });
 
     cfg.generate("../src/lib.rs", "main.rs");
@@ -1716,11 +1654,6 @@ fn test_freebsd(target: &str) {
         _ => cfg.define("_WANT_FREEBSD11_STAT", None),
     };
 
-    let freebsdlast = match freebsd_ver {
-        Some(12) | Some(13) => true,
-        _ => false,
-    };
-
     headers! { cfg:
                 "aio.h",
                 "arpa/inet.h",
@@ -1729,7 +1662,6 @@ fn test_freebsd(target: &str) {
                 "dlfcn.h",
                 "elf.h",
                 "errno.h",
-                "execinfo.h",
                 "fcntl.h",
                 "glob.h",
                 "grp.h",
@@ -1741,7 +1673,6 @@ fn test_freebsd(target: &str) {
                 "link.h",
                 "locale.h",
                 "machine/reg.h",
-                "malloc_np.h",
                 "mqueue.h",
                 "net/bpf.h",
                 "net/if.h",
@@ -1768,9 +1699,6 @@ fn test_freebsd(target: &str) {
                 "stdio.h",
                 "stdlib.h",
                 "string.h",
-                "sys/capsicum.h",
-                [freebsdlast]:"sys/auxv.h",
-                "sys/cpuset.h",
                 "sys/event.h",
                 "sys/extattr.h",
                 "sys/file.h",
@@ -1797,7 +1725,6 @@ fn test_freebsd(target: &str) {
                 "sys/ucontext.h",
                 "sys/uio.h",
                 "sys/un.h",
-                "sys/user.h",
                 "sys/utsname.h",
                 "sys/wait.h",
                 "syslog.h",
@@ -2023,13 +1950,6 @@ fn test_freebsd(target: &str) {
 
             // not available until FreeBSD 12, and is an anonymous union there.
             ("xucred", "cr_pid__c_anonymous_union") => true,
-
-            // m_owner field is a volatile __lwpid_t
-            ("umutex", "m_owner") => true,
-            // c_has_waiters field is a volatile int32_t
-            ("ucond", "c_has_waiters") => true,
-            // is PATH_MAX long but tests can't accept multi array as equivalent.
-            ("kinfo_vmentry", "kve_path") => true,
 
             _ => false,
         }
@@ -2596,7 +2516,7 @@ fn test_linux(target: &str) {
             s if s.ends_with("_nsec") && struct_.starts_with("stat") => {
                 s.replace("e_nsec", ".tv_nsec")
             }
-            // FIXME: epoll_event.data is actually a union in C, but in Rust
+            // FIXME: epoll_event.data is actuall a union in C, but in Rust
             // it is only a u64 because we only expose one field
             // http://man7.org/linux/man-pages/man2/epoll_wait.2.html
             "u64" if struct_ == "epoll_event" => "data.u64".to_string(),
@@ -2629,8 +2549,6 @@ fn test_linux(target: &str) {
             // (`c_uint`) and this clashes with the type of the `rlimit` APIs
             // which expect a `c_int` even though both are ABI compatible.
             "__rlimit_resource_t" => true,
-            // on Linux, this is a volatile int
-            "pthread_spinlock_t" => true,
 
             _ => false,
         }
@@ -2681,9 +2599,6 @@ fn test_linux(target: &str) {
 
             // FIXME: CI's kernel header version is old.
             "sockaddr_can" => true,
-
-            // Requires glibc 2.33 or newer.
-            "mallinfo2" => true,
 
             _ => false,
         }
@@ -2741,9 +2656,6 @@ fn test_linux(target: &str) {
             | "F_SEAL_SHRINK"
             | "F_SEAL_GROW"
             | "F_SEAL_WRITE" => true,
-            // The `ARPHRD_CAN` is tested in the `linux_if_arp.rs` tests
-            // because including `linux/if_arp.h` causes some conflicts:
-            "ARPHRD_CAN" => true,
 
             // Require Linux kernel 5.1:
             "F_SEAL_FUTURE_WRITE" => true,
@@ -2887,11 +2799,6 @@ fn test_linux(target: &str) {
 
             // FIXME: This needs musl 1.2.2 or later.
             "gettid" if musl => true,
-
-            // Needs glibc 2.33 or later.
-            "mallinfo2" => true,
-
-            "reallocarray" if musl => true,
 
             _ => false,
         }
@@ -3110,6 +3017,7 @@ fn test_linux_like_apis(target: &str) {
         cfg.header("elf.h");
         cfg.skip_fn(|_| true)
             .skip_static(|_| true)
+            .skip_fn(|_| true)
             .skip_const(|_| true)
             .type_name(move |ty, _is_struct, _is_union| ty.to_string())
             .skip_struct(move |ty| match ty {
@@ -3121,21 +3029,6 @@ fn test_linux_like_apis(target: &str) {
                 _ => true,
             });
         cfg.generate("../src/lib.rs", "linux_elf.rs");
-    }
-
-    if linux || android {
-        // Test `ARPHRD_CAN`.
-        let mut cfg = ctest_cfg();
-        cfg.header("linux/if_arp.h");
-        cfg.skip_fn(|_| true)
-            .skip_static(|_| true)
-            .skip_const(move |name| match name {
-                "ARPHRD_CAN" => false,
-                _ => true,
-            })
-            .skip_struct(|_| true)
-            .skip_type(|_| true);
-        cfg.generate("../src/lib.rs", "linux_if_arp.rs");
     }
 }
 
@@ -3285,8 +3178,6 @@ fn test_haiku(target: &str) {
                "kernel/fs_query.h",
                "kernel/fs_volume.h",
                "kernel/image.h",
-               "kernel/scheduler.h",
-               "storage/FindDirectory.h",
                "storage/StorageDefs.h",
                "support/Errors.h",
                "support/SupportDefs.h",

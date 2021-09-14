@@ -315,12 +315,6 @@ s! {
         pub named_sem_id: i32, // actually a union with unnamed_sem (i32)
         pub padding: [i32; 2],
     }
-
-    pub struct ucred {
-        pub pid: ::pid_t,
-        pub uid: ::uid_t,
-        pub gid: ::gid_t,
-    }
 }
 
 s_no_extra_traits! {
@@ -1301,7 +1295,7 @@ f! {
         return
     }
 
-    pub fn FD_ISSET(fd: ::c_int, set: *const fd_set) -> bool {
+    pub fn FD_ISSET(fd: ::c_int, set: *mut fd_set) -> bool {
         let fd = fd as usize;
         let size = ::mem::size_of_val(&(*set).fds_bits[0]) * 8;
         return ((*set).fds_bits[fd / size] & (1 << (fd % size))) != 0
